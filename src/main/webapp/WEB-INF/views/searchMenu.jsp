@@ -18,9 +18,9 @@
     <script>
         /*유효성검사 : 두날짜 기간이 사이가 7일이 넘어가지 않게하기*/
         /*startDate=2021-12-29&endDate=2022-01-26*/
-        $(document).ready(function (){
-
-        });
+        function check(f){
+            var startDate
+        }
     </script>
 
 </head>
@@ -40,11 +40,9 @@
         <option value="M04">간식</option>
     </select>
 
-    <input type="date" name="startDate" id="startDateId">
+    <input type="date" name="startDate" id="startDateId" oninput="checkDate()">
     <input type="date" name="endDate" id="endDateId">
 
-    <!--버튼 생성-->
-    <input type="button" value="조회" onclick="check(this.form)">
 
     <input type="submit" value="전송">
 </form>
