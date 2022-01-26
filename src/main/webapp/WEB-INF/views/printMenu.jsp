@@ -6,6 +6,8 @@
     <title>메인화면</title>
     <style>
 
+        h4 { text-align: center; }
+
         table,tr,td{
             vertical-align: top;
         }
@@ -19,17 +21,8 @@
 </head>
 <body>
 
-    <table width ="1000" height="300" align = "center">
-        <tr>
-            <td>식단구성표</td>
-        </tr>
-        <tr>
-            <td>현재날짜</td>
-        </tr>
-        <tr>
-            <td>식당명:식당 /급식기간 : ~ </td>
-        </tr>
-    </table>
+
+    <h4 style="a">식단구성표</h4>
 
     <table border="1" bordercolor="blue" width ="1000" height="300" align = "center" style="table-layout:fixed;">
         <thead>
