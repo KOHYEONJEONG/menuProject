@@ -19,8 +19,21 @@
 </head>
 <body>
 
+    <table width ="1000" height="300" align = "center">
+        <tr>
+            <td>식단구성표</td>
+        </tr>
+        <tr>
+            <td>현재날짜</td>
+        </tr>
+        <tr>
+            <td>식당명:식당 /급식기간 : ~ </td>
+        </tr>
+    </table>
+
     <table border="1" bordercolor="blue" width ="1000" height="300" align = "center" style="table-layout:fixed;">
         <thead>
+
             <tr>
                 <th>구분</th>
                 <th>월</th>
@@ -34,7 +47,7 @@
         </thead>
 
 
-            <c:forEach items="${weekMenuTable.mdList}" var="weekMenu">
+        <c:forEach items="${weekMenuTable.mdList}" var="weekMenu">
 
         <tr>
 
