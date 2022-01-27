@@ -39,7 +39,7 @@ public class MenuController {
 
         logger.info("menuVo : "+menuVo.get(0));
 
-        WeekMenuTable weekMenuTable = menuServiceImpl.getTable(vo.getRestaurantName(),vo.getStartDate(),vo.getEndDate(),menuVo);
+        WeekMenuTable weekMenuTable = menuServiceImpl.getTable(vo,menuVo);
 
         model.addAttribute("weekMenuTable",weekMenuTable);
 

@@ -31,9 +31,9 @@ public class MenuServiceImpl implements IMenuService {
         return menuDao.selectMenuList(vo);
     }
 
-    public WeekMenuTable getTable(String restaurantName,String startDate,String endDate,List<MenuDBVO> vo){
+    public WeekMenuTable getTable(SearchVO searchVo,List<MenuDBVO> vo){
         logger.info("잘들어옴--------");
-        WeekMenuTable weekMenuTable = new WeekMenuTable();//순서3
+
 
         //조식(월-일)
         MealDivision breakFast = new MealDivision();//순서2
@@ -44,9 +44,11 @@ public class MenuServiceImpl implements IMenuService {
         //간식(월-일)
         MealDivision snack = new MealDivision();//순서2
 
-        weekMenuTable.setRestaurantName(restaurantName);
-        weekMenuTable.setStartDate(startDate);
-        weekMenuTable.setEndDate(endDate);
+
+        WeekMenuTable weekMenuTable = new WeekMenuTable(searchVo.getRestaurantName(),searchVo.getStartDate(),searchVo.getEndDate());//순서3
+/*        weekMenuTable.setRestaurantName(vo.getRestaurantName());
+        weekMenuTable.setStartDate(vo.setStartDate(););
+        weekMenuTable.setEndDate(endDate);*/
 
         //날짜 포맷
         DateFormat input = new SimpleDateFormat("E");

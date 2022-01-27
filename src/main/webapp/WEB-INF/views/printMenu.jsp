@@ -17,10 +17,10 @@
             list-style-type: none; /*<li> 앞에 점 지우기*/
             padding-left: 0px;/*들여쓰기 지우기*/
         }
-
+/*
         th{
             vertical-align:center;
-        }
+        }*/
 
         .foodName{
             text-align: center;
@@ -64,6 +64,9 @@
                 <c:when test="${weekMenuTable.mdList.get(2) eq weekMenu}"><th>석식</th></c:when>
                 <c:when test="${weekMenuTable.mdList.get(3) eq weekMenu}"><th>간식</th></c:when>
             </c:choose>
+
+            <!--조식만,중식만 나오게 해야함.-->
+
             <td>
                 <c:set var="foodNameDistinct" value=""/>
                 <c:forEach items="${weekMenu.recipeListMon}" var="weekMenuMon">
@@ -197,11 +200,9 @@
 
             </tr>
         </c:forEach>
-
-
-
-
     </table>
+
+    <input type="button" value="메인화면" onclick="location.href='/searchMenu.do'">
 
 </body>
 </html>
