@@ -27,46 +27,109 @@
         }
 
     </style>
+
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous">
+    </script>
+
+    <script>
+        <!--검색한 요일별로 보여지기 -->
+        window.onload=function() {
+
+            function getParameterByName(name) {
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+
+            var start = getParameterByName('startDate');
+            alert(start);
+            var end = getParameterByName('endDate');
+            alert(end);
+
+            //end - start = 남은 기간
+
+            /*검색요일날로 데이터포맷해서 넣어주기.*/
+            //ex)수요일부터 검사했으면 앞에 날짜는 안나옴?
+            //월 = null
+            //화 = null
+            //수 = 수(10/1)
+        }
+    </script>
 </head>
 <body>
 
 
     <h3 style="a">식단구성표</h3>
+
     <!-- 현재년도 -->
     <c:set var="now" value="<%=new java.util.Date()%>" />
     <c:set var="sysYear"><fmt:formatDate value="${now}" pattern="yyyy.MM.dd"/> 현재</c:set>
     <h4><c:out value="${sysYear}"/></h4>
+
     <h4>식당명 : <c:out value="${weekMenuTable.restaurantName}"/>, 기간 : <c:out value="${weekMenuTable.startDate}"/>~<c:out value="${weekMenuTable.endDate}"/></h4>
     <table border="1" bordercolor="blue" width ="1000" height="300" align = "center" style="table-layout:fixed;">
         <thead>
-
             <tr>
                 <!--날짜수정해야함-->
                 <!--startDate랑 endDate로 가져와야할듯 함.-->
                 <th>구분</th>
-                <th>月</th>
-                <th>火</th>
-                <th>水</th>
-                <th>木</th>
-                <th>今</th>
-                <th>土</th>
-                <th>日</th>
+                <th id="mon">月</th>
+                <th id="tue">火</th>
+                <th id="wed">水</th>
+                <th id="thu">木</th>
+                <th id="fri">今</th>
+                <th id="sat">土</th>
+                <th id="sun">日</th>
             </tr>
         </thead>
 
+        <!--파라미터 조식을 -->
+        <c:choose>
+            <c:when test="${param.mealName eq '조식'}">
+                <c:set var="begin" value="0"></c:set>
+                <c:set var="end" value="0"></c:set>
+            </c:when>
+            <c:when test="${param.mealName eq '중식'}">
+                <c:set var="begin" value="1"></c:set>
+                <c:set var="end" value="1"></c:set>
+            </c:when>
+            <c:when test="${param.mealName eq '석식'}">
+                <c:set var="begin" value="2"></c:set>
+                <c:set var="end" value="2"></c:set>
+            </c:when>
+            <c:when test="${param.mealName eq '간식'}">
+                <c:set var="begin" value="3"></c:set>
+                <c:set var="end" value="3"></c:set>
+            </c:when>
+            <c:when test="${param.mealName eq '전체'}">
+                <c:set var="begin" value="0"></c:set>
+                <c:set var="end" value="3"></c:set>
+            </c:when>
+        </c:choose>
 
-        <c:forEach items="${weekMenuTable.mdList}" var="weekMenu">
+        <c:forEach items="${weekMenuTable.mdList}" var="weekMenu" begin="${begin}" end="${end}">
         <tr>
             <!--조식,중식,석식,간식 식사구분-->
             <c:choose>
-                <c:when test="${weekMenuTable.mdList.get(0) eq weekMenu}"><th>조식</th></c:when>
-                <c:when test="${weekMenuTable.mdList.get(1) eq weekMenu}"><th>중식</th></c:when>
-                <c:when test="${weekMenuTable.mdList.get(2) eq weekMenu}"><th>석식</th></c:when>
-                <c:when test="${weekMenuTable.mdList.get(3) eq weekMenu}"><th>간식</th></c:when>
+                <c:when test="${weekMenuTable.mdList.get(0) eq weekMenu}">
+                   <th>조식</th>
+                </c:when>
+                <c:when test="${weekMenuTable.mdList.get(1) eq weekMenu}">
+                    <th>중식</th>
+                </c:when>
+                <c:when test="${weekMenuTable.mdList.get(2) eq weekMenu}">
+                    <th>석식</th>
+                </c:when>
+                <c:when test="${weekMenuTable.mdList.get(3) eq weekMenu}">
+                    <th>간식</th>
+                </c:when>
             </c:choose>
 
             <!--조식만,중식만 나오게 해야함.-->
-
             <td>
                 <c:set var="foodNameDistinct" value=""/>
                 <c:forEach items="${weekMenu.recipeListMon}" var="weekMenuMon">
@@ -199,7 +262,9 @@
 
 
             </tr>
+
         </c:forEach>
+
     </table>
 
     <input type="button" value="메인화면" onclick="location.href='/searchMenu.do'">

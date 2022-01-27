@@ -33,6 +33,7 @@
         /*true,false로 배열에담아 모두 true면 전송.*/
         //var inval_Arr = new Array(4).fill(false);
         //inval_Arr[0] = true;
+        var start =  $('#startDateId').val();
 
             function checkStatus(){
                 var endDate = $("#endDateId");
@@ -49,11 +50,6 @@
             /*유효성검사 : 마지막날짜 체크박스 해제되어있는경우, 시작날짜 기준으로 그 주까지만 보여지게 만들기.
             /*startDate=2021-12-29&endDate=2022-01-26*/
             function checkDate(){
-                alert("hello")
-                var start =  $('#startDateId').val();
-                var intDayCnt1 = 0;
-                var intDayCnt2 = 0;
-
                 var end =  $('#startDateId').val();
                 var sDate = new Date(start);
                 var result = checkStatus();
