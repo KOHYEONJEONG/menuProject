@@ -3,6 +3,7 @@ package com.menu.controller;
 import com.menu.service.IMenuService;
 import com.menu.service.MenuServiceImpl;
 import com.menu.vo.MenuDBVO;
+import com.menu.vo.SearchVO;
 import com.menu.vo.WeekMenuTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 @Controller
@@ -28,21 +30,35 @@ public class MenuController {
     }
 
     @RequestMapping("/printMenu.do")
-    public String printMenu(Model model){
-
-
+    public String printMenu(Model model, SearchVO vo){
+        logger.info("getStartDate ---"+vo.getStartDate()+vo.getEndDate()+vo.getMealName());
 
         MenuServiceImpl menuServiceImpl = new MenuServiceImpl();//메소드 사용하려고
 
-        ArrayList<MenuDBVO> menuVo = service.selectMenuListTest();
-        logger.info("데이터----------------------------------------------"+menuVo.get(0));
+        ArrayList<MenuDBVO> menuVo = service.selectMenuList(vo);
 
-        WeekMenuTable weekMenuTable = menuServiceImpl.getTable(menuVo);
+        logger.info("menuVo : "+menuVo.get(0));
+
+        WeekMenuTable weekMenuTable = menuServiceImpl.getTable(vo.getRestaurantName(),vo.getStartDate(),vo.getEndDate(),menuVo);
 
         model.addAttribute("weekMenuTable",weekMenuTable);
 
         return "printMenu";
     }
-    
+
+    @RequestMapping("/printMenuTest.do")
+    public String printMenu(Model model){
+
+      /*  MenuServiceImpl menuServiceImpl = new MenuServiceImpl();//메소드 사용하려고
+
+        ArrayList<MenuDBVO> menuVo = service.selectMenuListTest();
+
+        WeekMenuTable weekMenuTable = menuServiceImpl.getTable(menuVo);
+
+        model.addAttribute("weekMenuTable",weekMenuTable);*/
+
+        return "printMenuTest";
+    }
+
     
 }

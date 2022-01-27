@@ -14,5 +14,5 @@ public class WeekMenuTable {//순서 3
     String restaurantName;
     String startDate;
     String endDate;
-    List<MealDivision> mdList = new ArrayList<>(); // 요일+식단표 가져오기
+    List<MealDivision> mdList = new ArrayList<>(); // 요일+식단표 가져오기 , new 중요
 }
