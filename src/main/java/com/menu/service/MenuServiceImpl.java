@@ -2,6 +2,7 @@ package com.menu.service;
 
 import com.menu.controller.HomeController;
 import com.menu.dao.IMenuDao;
+import com.menu.util.MenuPage;
 import com.menu.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,20 +23,22 @@ public class MenuServiceImpl implements IMenuService {
     IMenuDao menuDao;
 
     @Override
-    public ArrayList<MenuDBVO> selectMenuListTest() {
+    public ArrayList<MenuDBVO> selectMenuListTest() {//테스트
         return menuDao.selectMenuListTest();
     }
 
     @Override
-    public ArrayList<MenuDBVO> selectMenuList(SearchVO vo) {
+    public ArrayList<MenuDBVO> selectMenuList(SearchData vo) {//메뉴 불러오기.
         return menuDao.selectMenuList(vo);
     }
 
-    public WeekMenuTable getTable(SearchVO searchVo,List<MenuDBVO> vo){
-        logger.info("잘들어옴--------");
+    @Override
+    public ArrayList<MenuCodeVo> selectCode() {//searchPrint.jsp에 식사구분, 식당이 포함된 공통코드테이블 넣어주려고.
+        return menuDao.selectCode();
+    }
 
-
-        //조식(월-일)
+    public WeekMenuTable getTable(SearchData searchData, List<MenuDBVO> vo){
+         //조식(월-일)
         MealDivision breakFast = new MealDivision();//순서2
         //중식(월-일)
         MealDivision lunch = new MealDivision();//순서2
@@ -45,8 +48,8 @@ public class MenuServiceImpl implements IMenuService {
         MealDivision snack = new MealDivision();//순서2
 
 
-        WeekMenuTable weekMenuTable = new WeekMenuTable(searchVo.getRestaurantName(),searchVo.getStartDate(),searchVo.getEndDate());//순서3
-/*        weekMenuTable.setRestaurantName(vo.getRestaurantName());
+        WeekMenuTable weekMenuTable = new WeekMenuTable(searchData.getRestaurantName(),searchData.getStartDate(),searchData.getEndDate());//순서3
+        /*weekMenuTable.setRestaurantName(vo.getRestaurantName());
         weekMenuTable.setStartDate(vo.setStartDate(););
         weekMenuTable.setEndDate(endDate);*/
 
@@ -61,22 +64,22 @@ public class MenuServiceImpl implements IMenuService {
             if(menuDBVO.getMealNm().equals("조식")){
                 logger.info("조식------------------------------");
                 //월-일
-                division(toStringYmd,breakFast,menuDBVO);
+                dayDivision(toStringYmd,breakFast,menuDBVO);
 
             }else if(menuDBVO.getMealNm().equals("중식")){
                 logger.info("중식------------------------------");
                 //월-일
-                division(toStringYmd,lunch,menuDBVO);
+                dayDivision(toStringYmd,lunch,menuDBVO);
 
             }else if(menuDBVO.getMealNm().equals("석식")){
                 logger.info("석식------------------------------");
                 //월-일
-                division(toStringYmd,dinner,menuDBVO);
+                dayDivision(toStringYmd,dinner,menuDBVO);
 
             }else if(menuDBVO.getMealNm().equals("간식")){
                 logger.info("간식------------------------------");
                 //월-일
-                division(toStringYmd,snack,menuDBVO);
+                dayDivision(toStringYmd,snack,menuDBVO);
             }
         }
 
@@ -89,21 +92,29 @@ public class MenuServiceImpl implements IMenuService {
     }
 
 
-    public void division(String toStringYmd,MealDivision division, MenuDBVO menuDBVO){
+    public void dayDivision(String toStringYmd,MealDivision mealDivision, MenuDBVO menuDBVO){
         if(toStringYmd.equals("월")) {
-            division.getRecipeListMon().add(new MenuRecipe(menuDBVO.getFoodNm(), menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListMon().add(new MenuRecipe(menuDBVO.getFoodNm(), menuDBVO.getIngredientsNm()));
         }else if(toStringYmd.equals("화")){
-            division.getRecipeListTue().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListTue().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
         }else if(toStringYmd.equals("수")) {
-            division.getRecipeListWed().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListWed().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
         }else if(toStringYmd.equals("목")) {
-            division.getRecipeListThu().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListThu().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
         } else if(toStringYmd.equals("금")) {
-            division.getRecipeListFri().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListFri().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
         }else if(toStringYmd.equals("토")) {
-            division.getRecipeListSat().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListSat().add(new MenuRecipe(menuDBVO.getFoodNm(),menuDBVO.getIngredientsNm()));
         }else if(toStringYmd.equals("일")) {
-            division.getRecipeListSun().add(new MenuRecipe(menuDBVO.getFoodNm(), menuDBVO.getIngredientsNm()));
+            mealDivision.getRecipeListSun().add(new MenuRecipe(menuDBVO.getFoodNm(), menuDBVO.getIngredientsNm()));
         }
+    }
+
+    public MenuPage paging(WeekMenuTable weekMenuTable){//페이징
+        MenuPage mp = new MenuPage();
+
+        //조식,중식,석식,
+
+        return mp;
     }
 }

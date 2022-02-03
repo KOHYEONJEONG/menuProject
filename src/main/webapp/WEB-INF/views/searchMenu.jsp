@@ -1,14 +1,9 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: USER
-  Date: 2022-01-26
-  Time: 오전 9:35
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>검색화면</title>
+    <title>메인화면</title>
 
     <style>
         #intro {
@@ -29,55 +24,147 @@
             crossorigin="anonymous">
     </script>
 
-    <script>
+    <script type="text/javascript">
         /*true,false로 배열에담아 모두 true면 전송.*/
         //var inval_Arr = new Array(4).fill(false);
-        //inval_Arr[0] = true;
-        var start =  $('#startDateId').val();
 
-            function checkStatus(){
-                var endDate = $("#endDateId");
-                var isCheckBox = $('#checkBoxId').is(":checked");
-                if(!isCheckBox){
-                    endDate.attr("disabled",false);
-                    return false;
-                }else{
-                    endDate.attr("disabled",true); //체크되어있으면
-                    return true;
-                }
-            };
+        /*마지막요일 체크박스 체크하면, 입력이 안되는데 자동으로 시작일 기준으로 주간 보여지게 하기*/
+        function checkStatus(){
+            var endDate = $("#endDateId");
+            var isCheckBox = $('#checkBoxId').is(":checked");
+            if(!isCheckBox){
+                endDate.attr("disabled",false);
+                return false;
+            }else{
+                endDate.attr("disabled",true); //체크되어있으면
+                return true;
+            }
+        };
 
-            /*유효성검사 : 마지막날짜 체크박스 해제되어있는경우, 시작날짜 기준으로 그 주까지만 보여지게 만들기.
-            /*startDate=2021-12-29&endDate=2022-01-26*/
-            function checkDate(){
-                var end =  $('#startDateId').val();
-                var sDate = new Date(start);
-                var result = checkStatus();
+        /*유효성검사 : 마지막날짜 체크박스 해제되어있는경우, 시작날짜 기준으로 그 주까지만 보여지게 만들기.
+        /*startDate=2021-12-29&endDate=2022-01-26*/
+        function checkStartDate(){
+            var start =  $('#startDateId').val();//string
+            var endResult ="";
+            var sDate = new Date(start);
+            var result = checkStatus();
 
-                if(result==true){
-                    alert(result);
-                    var year= sDate.getFullYear();
-                    var month=(1+sDate.getMonth());
-                    month = month>=10? month:'0'+month;
-                    var day = sDate.getDate()+6; //그 주까지 보여지게 변경해야할듯....
-                    day = day>=10?day:'0'+day;//삼항연산자
-                    end = year+'-'+month+'-'+day;
-                    end = $('#endDateId').val(end);
-                }else{
-                    if(start>end){
-                        console.log("시작날짜보다 작아요");
-                        console.log(start);
-                        console.log(end);
-                    }else{
-                        console.log(start);
-                        console.log(end);
-                    }
-                }
-            };
+            if(result==true){ // 체크박스가 눌러져있으면 true
+                var sunday = sunDayFunction(sDate.getDay());//체크박스 눌르면 알아서 마지막 요일 계산되게 만들기 위해서
+
+                //(년-월-일)
+                var year= sDate.getFullYear();//number
+                var month=(1+sDate.getMonth());
+                month = month>=10? month:'0'+month;
+                var day = sDate.getDate()+sunday; //그 주까지 보여지게 변경해야할듯....
+                day = day>=10?day:'0'+day;//삼항연산자
+                endResult = year+'-'+month+'-'+day;
+
+                $('#endDateId').val(endResult);
+            }
+
+        };
+
+        /*시작날짜를 기준으로 현재 요일에 일요일기간을 구해서 보내주기*/
+         function sunDayFunction(startDay){
+            var sunday = 0;
+
+            if(startDay == 0){
+                sunday =0;
+            }else if(startDay == 1){
+                sunday = 6;
+            }else if(startDay == 2){
+                sunday = 5;
+            }else if(startDay == 3){
+                sunday = 4;
+            }else if(startDay == 4){
+                sunday = 3;
+            }else if(startDay == 5){
+                sunday = 2;
+            }else if(startDay == 6){
+                sunday = 1;
+            }
+
+            return sunday;
+         }
+
+         function checkEndDate(){
+             var start =  $('#startDateId').val();//값
+             if (start === ""){
+                 alert("시작날짜를 입력해주세요");
+                 $('#startDateId').focus();
+                 $('#endDateId').val("");
+                return;
+             }
+
+
+             var sDate = new Date(start);//object
+             alert(sDate);
+             //이번주 범위 구하려고
+             //var monday = getWeekMondayDate(sDate);//해당주에 월요일,string
+             var sunday = getWeekSunDayDate(sDate);//해당주에 일요일,string
+
+             var sundayToDate = new Date(sunday);// string to object
+
+             var end =  $('#endDateId').val();//값
+             var eDate = new Date(end);//object
+``
+
+             /* //년-월-일 구하기
+             var endResult ="";
+             var dateDif = sunDayFunction(sDate.getDay());//시작날짜와 일요일까지 차이기간
+             var year= sDate.getFullYear();
+             var month=(1+sDate.getMonth());
+             month = month>=10? month:'0'+month;
+             var day = sDate.getDate(); //그 주까지 보여지게 변경해야할듯....
+             day = day>=10?day:'0'+day;//삼항연산자
+             endResult = year+'-'+month+'-'+day;
+
+             $('#endDateId').val(endResult);*/
+
+             if(sDate>eDate){//&& eDate>=changeDate
+                 alert("시작날짜보다 앞을 선택할 수 없음");
+                 $('#endDateId').val("");
+                 /*주간을 벗어나면 자동으로 마지막 선택해줌*/
+             }
+
+             if (eDate>sundayToDate){//수정
+                 alert("이번주 일요일날짜까지만 선택할 수 있음");
+                 $('#endDateId').val("");
+             }
+
+
+         }
+
+        function getWeekMondayDate(d) {//해당일에 월요일 구하기
+            var paramDate = new Date(d);
+
+            var day = paramDate.getDay();
+            var diff = paramDate.getDate() - day + (day == 0 ? -6 : 1);
+            return new Date(paramDate.setDate(diff)).toISOString().substring(0, 10);
+            //console.log(new Date(paramDate.setDate(diff)).toISOString().substring(0, 10));
+        }
+
+        function getWeekSunDayDate(d) {//해당일에 일요일 구하기
+            var paramDate = new Date(d);
+
+            var day = paramDate.getDay();
+            //var diff = paramDate.getDate() - day + (day == 0 ? -7 : 0);
+            var diff = paramDate.getDate() - day + (day == 0 ? -6 : 1)+6;
+            return new Date(paramDate.setDate(diff)).toISOString().substring(0, 10);
+            //console.log(new Date(paramDate.setDate(diff)).toISOString().substring(0, 10));
+        }
+
+
+         isPositive = function(num) {
+         //음수면 false, 양수면 true
+            return num >= 0;
+        };
 
 
 
         function check_form(){//전송
+            //해제 안하면 마지막날이 전송이 안됨.
             $("input[name=endDate]").attr("disabled", false);
             document.menuForm.submit();//전송
 
@@ -101,7 +188,7 @@
             }else{
                 alert("기간을 다시 확인해주세요.");
             }*/
-        }
+        }//check_form
     </script>
 
 </head>
@@ -113,25 +200,29 @@
 <form action="/printMenu.do" name="menuForm" method="get">
     식당:
     <select name="restaurantName" id="restaurantNameId" required>
-        <!--서버에는 restaurantName = R01로 전송함.-->
-        <option value="여민관">여민관</option>
-        <option value="춘추관">춘추관</option>
+        <c:forEach items="${menuCodeVo}" var="code">
+            <c:set value="${code.codeId}" var="codeId"/>
+                <c:if test="${fn:substring(codeId,0,1) eq 'R'}">
+                    <option value="${code.codeNm}">${code.codeNm}</option>
+                </c:if>
+        </c:forEach>
     </select>
 
     식사구분:
     <select name="mealName" id="mealNameId" required>
-        <!--서버에는 restaurantName = R01로 전송함.-->
-        <option value="조식">조식</option>
-        <option value="중식">중식</option>
-        <option value="석식">석식</option>
-        <option value="간식">간식</option>
-        <option value="전체">전체</option>
+        <c:forEach items="${menuCodeVo}" var="code">
+            <c:set value="${code.codeId}" var="codeId"/>
+                <c:if test="${fn:substring(codeId,0,1) eq 'M'}">
+                    <option value="${code.codeNm}">${code.codeNm}</option>
+               </c:if>
+        </c:forEach>
+
     </select>
 
     기간:
-    <input type="date" name="startDate" id="startDateId" oninput="checkDate()" required>
+    <input type="date" name="startDate" id="startDateId" oninput="checkStartDate()" required>
     ~
-    <input type="date" name="endDate" id="endDateId" oninput="checkDate()" required>
+    <input type="date" name="endDate" id="endDateId" oninput="checkEndDate()" required>
     <input type="checkbox" id="checkBoxId" oninput="checkStatus()">
 
     <input type="button" value="전송" onclick="check_form()">

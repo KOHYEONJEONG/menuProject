@@ -26,12 +26,16 @@
             text-align: center;
         }
 
+        body {
+        <%--인쇄 배경색, 이거해도 안되면 (인쇄-기타설정-옵션->배경 그래픽)--%>
+            -webkit-print-color-adjust: exact;
+        }
+
     </style>
 </head>
 <body>
 
-
-    <h3 style="a">식단구성표</h3>
+    <h3>식단구성표</h3>
     <!-- 현재년도 -->
     <c:set var="now" value="<%=new java.util.Date()%>" />
     <c:set var="sysYear"><fmt:formatDate value="${now}" pattern="yyyy.MM.dd"/> 현재</c:set>

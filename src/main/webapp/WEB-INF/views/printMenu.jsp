@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>메인화면</title>
+    <title>출력화면</title>
     <style>
 
         h3,h4{ text-align: center; margin: 0;}
@@ -26,6 +26,11 @@
             text-align: center;
         }
 
+        body {
+        <%--인쇄 배경색, 이거해도 안되면 (인쇄-기타설정-옵션->배경 그래픽)--%>
+            -webkit-print-color-adjust: exact;
+        }
+
     </style>
 
     <script
@@ -38,37 +43,55 @@
         <!--검색한 요일별로 보여지기 -->
         window.onload=function() {
 
-            function getParameterByName(name) {
+            function getParameterByName(name) {//URL에 파라미터를 가져오기 위해서 사용
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                     results = regex.exec(location.search);
                 return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            }
+            };
 
             var start = getParameterByName('startDate');
-            alert(start);
+            var sdt = new Date(start);//시작날짜
+
             var end = getParameterByName('endDate');
-            alert(end);
+            var edt = new Date(end);//마지막날짜
 
-            //end - start = 남은 기간
+            //사이기간
+            var dateDiff= Math.ceil((edt.getTime() - sdt.getTime())/(1000*3600*24))+1;//첫날포함
+            var arrDay = new Array("","月","火","水","木","金","土","日");
 
-            /*검색요일날로 데이터포맷해서 넣어주기.*/
-            //ex)수요일부터 검사했으면 앞에 날짜는 안나옴?
-            //월 = null
-            //화 = null
-            //수 = 수(10/1)
-        }
+            /*
+            //테스트 - 첫날 요일 구하기
+            var todayLabel = arrDay[sdt.getDay()];//시작 요일가져옴
+
+            //테스트 - 마지막 요일구하기
+            var endLabel = arrDay[edt.getDay()];//마지막 요일가져옴
+
+            //arrDay.forEach(element => console.log(element));*/
+
+            var array_day = document.getElementsByClassName("day");
+
+            var day = sdt.getDate()-1;//일
+
+            for(var i=sdt.getDay(); i<=sdt.getDay()+dateDiff-1; i++){
+                var month = (1+sdt.getMonth());//월
+                day++;
+                var format = "("+(("00"+month.toString()).slice(-2))+"/"+(("00"+day.toString()).slice(-2))+")";
+                array_day[i-1].innerText= array_day[i-1].innerText +format;
+            }
+
+        };
     </script>
 </head>
 <body>
 
 
-    <h3 style="a">식단구성표</h3>
+    <h3>식단구성표</h3>
 
     <!-- 현재년도 -->
-    <c:set var="now" value="<%=new java.util.Date()%>" />
-    <c:set var="sysYear"><fmt:formatDate value="${now}" pattern="yyyy.MM.dd"/> 현재</c:set>
-    <h4><c:out value="${sysYear}"/></h4>
+<%--    <c:set var="now" value="<%=new java.util.Date()%>" />
+    <c:set var="sysYear"><fmt:formatDate value="${now}" pattern="yyyy.MM.dd"/> 현재</c:set>--%>
+    <h4><c:out value="${param.startDate}"/> 현재</h4>
 
     <h4>식당명 : <c:out value="${weekMenuTable.restaurantName}"/>, 기간 : <c:out value="${weekMenuTable.startDate}"/>~<c:out value="${weekMenuTable.endDate}"/></h4>
     <table border="1" bordercolor="blue" width ="1000" height="300" align = "center" style="table-layout:fixed;">
@@ -77,17 +100,16 @@
                 <!--날짜수정해야함-->
                 <!--startDate랑 endDate로 가져와야할듯 함.-->
                 <th>구분</th>
-                <th id="mon">月</th>
-                <th id="tue">火</th>
-                <th id="wed">水</th>
-                <th id="thu">木</th>
-                <th id="fri">今</th>
-                <th id="sat">土</th>
-                <th id="sun">日</th>
+                <th class="day">月</th>
+                <th class="day">火</th>
+                <th class="day">水</th>
+                <th class="day">木</th>
+                <th class="day">今</th>
+                <th class="day">土</th>
+                <th class="day">日</th>
             </tr>
         </thead>
 
-        <!--파라미터 조식을 -->
         <c:choose>
             <c:when test="${param.mealName eq '조식'}">
                 <c:set var="begin" value="0"></c:set>
@@ -153,6 +175,7 @@
                     <c:forEach items="${weekMenu.recipeListTue}" var="weekMenuTue">
 
                             <c:if test="${foodNameDistinct ne weekMenuTue.foodName}">
+
                             <ul>
                                 <li class="foodName" style="background-color: greenyellow;align-content:center;">
                                     <c:set var="foodNameDistinct" value="${weekMenuTue.foodName}"/>

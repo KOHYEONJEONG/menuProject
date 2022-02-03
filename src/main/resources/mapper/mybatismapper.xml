@@ -36,15 +36,14 @@
 		c1.CODE_NM= '여민관'
 		ORDER BY YMD,c2.CODE_ID
 	</select>
-	
-<!--	<select id="selectTest" resultType="com.food.vo.TestVO">
-		&lt;!&ndash;test&ndash;&gt;
-		select * from cms_menu
+
+	<select id="selectCode" resultType="com.menu.vo.MenuCodeVo">
+		select CODE_ID, CODE_NM
+		from cms_common_code
+		order by code_ID
 	</select>
 
-	<insert id="insertFood">
-		insert into cms_food values(seq_food_id.nextVal, '닭도리볶음밥')
-	</insert>-->
+
 
 	
 </mapper>
